@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.luv2code.ecommerce.dto.Purchase;
 import com.luv2code.ecommerce.dto.PurchaseResponse;
-import com.luv2code.ecommerce.service.CheckoutService;
+import com.luv2code.ecommerce.service.ICheckoutService;
 
 
 //@CrossOrigin("http://localhost:4200")
@@ -17,9 +17,9 @@ import com.luv2code.ecommerce.service.CheckoutService;
 @RequestMapping("/api/checkout")
 public class CheckoutController {
   
-  private final CheckoutService checkoutService;
+  private final ICheckoutService checkoutService;
 
-  public CheckoutController(CheckoutService checkoutService) {
+  public CheckoutController(ICheckoutService checkoutService) {
     this.checkoutService = checkoutService;
   }
 
