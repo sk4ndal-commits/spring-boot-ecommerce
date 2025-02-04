@@ -1,8 +1,5 @@
 # spring-boot-ecommerce
 
-This application was part of a Udemy course.
-
-
 ## Features
 
 - Load product from database
