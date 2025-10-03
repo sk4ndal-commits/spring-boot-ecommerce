@@ -5,7 +5,6 @@ import com.luv2code.ecommerce.dto.PaymentInfo
 import com.luv2code.ecommerce.dto.Purchase
 import com.luv2code.ecommerce.dto.PurchaseResponse
 import com.luv2code.ecommerce.entity.Customer
-import com.luv2code.ecommerce.entity.Order
 import com.luv2code.ecommerce.extensions.placeFromPurchase
 import com.stripe.Stripe
 import com.stripe.exception.StripeException
@@ -13,7 +12,6 @@ import com.stripe.model.PaymentIntent
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.util.*
 
 @Service
 open class CheckoutService(
@@ -47,7 +45,7 @@ open class CheckoutService(
     }
 
     @Throws(StripeException::class)
-    override fun createPaymentIntent(paymentInfo: PaymentInfo?): PaymentIntent?
+    override fun createPaymentIntent(paymentInfo: PaymentInfo?): PaymentIntent
     {
         val paymentMethodTypes = listOf("card")
 

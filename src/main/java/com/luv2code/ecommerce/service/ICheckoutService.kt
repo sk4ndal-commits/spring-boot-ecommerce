@@ -8,8 +8,8 @@ import com.stripe.model.PaymentIntent
 
 interface ICheckoutService
 {
-    fun placeOrder(purchase: Purchase?): PurchaseResponse?
+    fun placeOrder(purchase: Purchase?): PurchaseResponse
 
     @Throws(StripeException::class)
-    fun createPaymentIntent(paymentInfo: PaymentInfo?): PaymentIntent?
+    fun createPaymentIntent(paymentInfo: PaymentInfo?): PaymentIntent
 }
