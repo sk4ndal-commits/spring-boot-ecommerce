@@ -1,4 +1,4 @@
-package com.luv2code.ecommerce.config;
+package com.luv2code.ecommerce.config
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -32,6 +32,6 @@ open class SecurityConfiguration
             csrf.disable()
         }
 
-        return httpSecurity?.build();
+        return httpSecurity?.build()
     }
 }

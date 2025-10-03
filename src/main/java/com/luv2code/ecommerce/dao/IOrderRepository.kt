@@ -1,4 +1,4 @@
-package com.luv2code.ecommerce.dao;
+package com.luv2code.ecommerce.dao
 
 import com.luv2code.ecommerce.entity.Order
 import org.springframework.data.domain.Page
