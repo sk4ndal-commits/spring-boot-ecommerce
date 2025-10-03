@@ -1,75 +1,78 @@
-package com.luv2code.ecommerce.service;
+package com.luv2code.ecommerce.service
 
-import com.luv2code.ecommerce.dao.ICustomerRepository;
-import com.luv2code.ecommerce.dto.PaymentInfo;
-import com.luv2code.ecommerce.dto.Purchase;
-import com.luv2code.ecommerce.dto.PurchaseResponse;
-import com.luv2code.ecommerce.entity.Customer;
-import com.luv2code.ecommerce.entity.Order;
-import com.luv2code.ecommerce.entity.OrderItem;
-import com.stripe.Stripe;
-import com.stripe.exception.StripeException;
-import com.stripe.model.PaymentIntent;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.*;
+import com.luv2code.ecommerce.dao.ICustomerRepository
+import com.luv2code.ecommerce.dto.PaymentInfo
+import com.luv2code.ecommerce.dto.Purchase
+import com.luv2code.ecommerce.dto.PurchaseResponse
+import com.luv2code.ecommerce.entity.Customer
+import com.luv2code.ecommerce.entity.Order
+import com.luv2code.ecommerce.extensions.placeFromPurchase
+import com.stripe.Stripe
+import com.stripe.exception.StripeException
+import com.stripe.model.PaymentIntent
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
+import java.util.*
 
 @Service
-public class CheckoutService implements ICheckoutService {
+open class CheckoutService(
+    private val customerRepository: ICustomerRepository,
+    @param:Value($$"${stripe.key.secret}") private val secretKey: String,
+) : ICheckoutService
+{
 
-    private final ICustomerRepository customerRepository;
-
-    public CheckoutService(ICustomerRepository customerRepository, @Value("${stripe.key.secret}") String secretKey) {
-        this.customerRepository = customerRepository;
-        Stripe.apiKey = secretKey;
+    init
+    {
+        Stripe.apiKey = secretKey
     }
 
     @Override
     @Transactional
-    public PurchaseResponse placeOrder(Purchase purchase) {
+    override fun placeOrder(purchase: Purchase?): PurchaseResponse
+    {
+        requireNotNull(purchase) { "purchase must not be null" }
+        val order = purchase.order ?: throw IllegalArgumentException("order must not be null")
 
-        Order order = purchase.getOrder();
-        String orderTrackingNumber = generateOrderTrackingNumber();
-        order.setOrderTrackingNumber(orderTrackingNumber);
+        val orderTrackingNumber = order.placeFromPurchase(purchase)
 
-        Set<OrderItem> orderItems = purchase.getOrderItems();
-        orderItems.forEach(order::add);
-        order.setBillingAddress(purchase.getBillingAddress());
-        order.setShippingAddress(purchase.getShippingAddress());
+        val orderItems = purchase.orderItems ?: throw IllegalArgumentException("orderItems must not be null")
+        orderItems.forEach(order::add)
 
-        Customer customer = purchase.getCustomer();
-        Customer customerFromRepository = customerRepository.findByEmail(customer.getEmail());
+        val customer = getCustomer(purchase)
+        customer.add(order)
+        customerRepository.save(customer)
 
-        if (customerFromRepository != null) {
-            customer = customerFromRepository;
+        return PurchaseResponse(orderTrackingNumber)
+    }
+
+    @Throws(StripeException::class)
+    override fun createPaymentIntent(paymentInfo: PaymentInfo?): PaymentIntent?
+    {
+        val paymentMethodTypes = listOf("card")
+
+        val params = mapOf(
+            "amount" to (paymentInfo?.amount ?: 0),
+            "currency" to (paymentInfo?.currency ?: ""),
+            "payment_method_types" to paymentMethodTypes,
+            "receipt_email" to (paymentInfo?.receiptEmail ?: ""),
+            "description" to "Luv2Shop Purchase"
+        )
+
+        return PaymentIntent.create(params)
+    }
+
+    private fun getCustomer(purchase: Purchase): Customer
+    {
+        var customer = purchase.customer ?: throw IllegalArgumentException("customer must not be null")
+        val email = customer.email ?: throw IllegalArgumentException("email must not be null")
+        val customerFromRepository = customerRepository.findByEmail(email)
+
+        if (customerFromRepository != null)
+        {
+            customer = customerFromRepository
         }
 
-        customer.add(order);
-
-        customerRepository.save(customer);
-
-        return new PurchaseResponse(orderTrackingNumber);
-    }
-
-    @Override
-    public PaymentIntent createPaymentIntent(PaymentInfo paymentInfo) throws StripeException {
-
-        List<String> paymentMethodsTypes = new ArrayList<>();
-        paymentMethodsTypes.add("card");
-
-        Map<String, Object> params = new HashMap<>();
-        params.put("amount", paymentInfo.getAmount());
-        params.put("currency", paymentInfo.getCurrency());
-        params.put("payment_method_types", paymentMethodsTypes);
-        params.put("receipt_email", paymentInfo.getReceiptEmail());
-        params.put("description", "Luv2Shop Purchase");
-
-        return PaymentIntent.create(params);
-    }
-
-    private String generateOrderTrackingNumber() {
-        return UUID.randomUUID().toString();
+        return customer
     }
 }

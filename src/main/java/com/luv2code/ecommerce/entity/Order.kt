@@ -1,5 +1,6 @@
 package com.luv2code.ecommerce.entity
 
+import com.luv2code.ecommerce.dto.Purchase
 import jakarta.persistence.*
 import lombok.Getter
 import lombok.Setter
@@ -8,11 +9,13 @@ import org.hibernate.annotations.UpdateTimestamp
 import java.math.BigDecimal
 import java.util.*
 
+
 @Entity
 @Table(name = "orders")
 @Getter
 @Setter
-class Order {
+class Order
+{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -54,7 +57,8 @@ class Order {
     @JoinColumn(name = "billing_address_id", referencedColumnName = "id")
     var billingAddress: Address? = null
 
-    fun add(item: OrderItem?){
+    fun add(item: OrderItem?)
+    {
         if (item == null) return
 
         this.orderItems.add(item)
