@@ -1,78 +1,84 @@
-package com.luv2code.ecommerce.config;
+package com.luv2code.ecommerce.config
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
-import com.luv2code.ecommerce.entity.*;
-
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.data.rest.core.config.RepositoryRestConfiguration;
-import org.springframework.data.rest.webmvc.config.RepositoryRestConfigurer;
-import org.springframework.http.HttpMethod;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.metamodel.EntityType;
+import com.luv2code.ecommerce.entity.*
+import jakarta.persistence.EntityManager
+import jakarta.persistence.metamodel.EntityType
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.context.annotation.Configuration
+import org.springframework.data.rest.core.config.RepositoryRestConfiguration
+import org.springframework.data.rest.core.mapping.ConfigurableHttpMethods
+import org.springframework.data.rest.core.mapping.ResourceMetadata
+import org.springframework.data.rest.webmvc.config.RepositoryRestConfigurer
+import org.springframework.http.HttpMethod
+import org.springframework.web.servlet.config.annotation.CorsRegistry
+import java.util.function.Consumer
 
 @Configuration
-public class MyDataRestConfig implements RepositoryRestConfigurer {
+open class MyDataRestConfig(private val entityManager: EntityManager) : RepositoryRestConfigurer
+{
+    @Value($$"${allowed.origins}")
+    private val theAllowedOrigins: Array<String?> = emptyArray()
 
-  private final EntityManager entityManager;
+    @Value($$"${spring.data.rest.base-path}")
+    private val basePath: String? = null
 
-  @Value("${allowed.origins}")
-  private String[] theAllowedOrigins;
+    override fun configureRepositoryRestConfiguration(config: RepositoryRestConfiguration, cors: CorsRegistry)
+    {
+        val theUnsupportedActions =
+            arrayOf<HttpMethod?>(HttpMethod.DELETE, HttpMethod.PUT, HttpMethod.POST, HttpMethod.PATCH)
 
-  @Value("${spring.data.rest.base-path}")
-  private String basePath;
+        // allow cross-origin
+        cors.addMapping("$basePath/**").allowedOrigins(*theAllowedOrigins)
 
-  public MyDataRestConfig(EntityManager theEntityManager) {
-    entityManager = theEntityManager;
-  }
+        // disable put,post,delete for Product
+        disableHttpMethods(Product::class.java, config, theUnsupportedActions)
 
-  @Override
-  public void configureRepositoryRestConfiguration(RepositoryRestConfiguration config, CorsRegistry cors) {
-    HttpMethod[] theUnsupportedActions = {HttpMethod.DELETE, HttpMethod.PUT, HttpMethod.POST, HttpMethod.PATCH};
+        // disable put,post,delete for ProductCategory
+        disableHttpMethods(ProductCategory::class.java, config, theUnsupportedActions)
 
-    // allow cross-origin
-    cors.addMapping(basePath+"/**").allowedOrigins(theAllowedOrigins);
+        // disable put, post, delete for Country
+        disableHttpMethods(Country::class.java, config, theUnsupportedActions)
 
-    // disable put,post,delete for Product
-    disableHttpMethods(Product.class, config, theUnsupportedActions);
+        // disable put, post, delete for State
+        disableHttpMethods(State::class.java, config, theUnsupportedActions)
 
-    // disable put,post,delete for ProductCategory
-    disableHttpMethods(ProductCategory.class, config, theUnsupportedActions);
+        // disable put, post, delete for Order
+        disableHttpMethods(Order::class.java, config, theUnsupportedActions)
 
-    // disable put, post, delete for Country
-    disableHttpMethods(Country.class, config, theUnsupportedActions);
+        exposeIds(config)
 
-    // disable put, post, delete for State
-    disableHttpMethods(State.class, config, theUnsupportedActions);
+        super.configureRepositoryRestConfiguration(config, cors)
+    }
 
-    // disable put, post, delete for Order
-    disableHttpMethods(Order.class, config, theUnsupportedActions);
+    private fun disableHttpMethods(
+        theClass: Class<*>?,
+        config: RepositoryRestConfiguration,
+        theMethods: Array<HttpMethod?>
+    )
+    {
+        config
+            .exposureConfiguration
+            .forDomainType(theClass)
+            .withItemExposure { _: ResourceMetadata?, httpMethods: ConfigurableHttpMethods? ->
+                httpMethods!!.disable(
+                    *theMethods
+                )
+            }
+            .withCollectionExposure { _: ResourceMetadata?, httpMethods: ConfigurableHttpMethods? ->
+                httpMethods!!.disable(
+                    *theMethods
+                )
+            }
+    }
 
-    exposeIds(config);
+    private fun exposeIds(config: RepositoryRestConfiguration)
+    {
+        val entities = entityManager.metamodel.entities
+        val entityClasses: MutableList<Class<*>?> = ArrayList()
 
-    RepositoryRestConfigurer.super.configureRepositoryRestConfiguration(config, cors);
-  }
+        entities.forEach(Consumer { tempEntityType: EntityType<*>? -> entityClasses.add(tempEntityType!!.getJavaType()) })
 
-  private void disableHttpMethods(Class<?> theClass, RepositoryRestConfiguration config, HttpMethod[] theMethods) {
-    config
-          .getExposureConfiguration()
-          .forDomainType(theClass)
-          .withItemExposure((metadata, httpMethods) -> httpMethods.disable(theMethods))
-          .withCollectionExposure((metadata, httpMethods) -> httpMethods.disable(theMethods));
-  }
-
-  private void exposeIds(RepositoryRestConfiguration config) {
-    Set<EntityType<?>> entities = entityManager.getMetamodel().getEntities();
-    List<Class<?>> entityClasses = new ArrayList<>();
-
-    entities.forEach(tempEntityType -> entityClasses.add(tempEntityType.getJavaType()));
-
-    Class<?>[] domainTypes = entityClasses.toArray(new Class[0]);
-    config.exposeIdsFor(domainTypes);
-  }
+        val domainTypes = entityClasses.toTypedArray<Class<*>?>()
+        config.exposeIdsFor(*domainTypes)
+    }
 }
