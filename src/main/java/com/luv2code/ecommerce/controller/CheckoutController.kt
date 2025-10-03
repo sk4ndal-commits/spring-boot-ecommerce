@@ -1,4 +1,4 @@
-package com.luv2code.ecommerce.controller;
+package com.luv2code.ecommerce.controller
 
 import com.luv2code.ecommerce.dto.PaymentInfo
 import com.luv2code.ecommerce.dto.Purchase
@@ -31,8 +31,8 @@ class CheckoutController(
     fun createPaymentIntent(@RequestBody paymentInfo: PaymentInfo?): ResponseEntity<String>
     {
         val paymentIntent = checkoutService.createPaymentIntent(paymentInfo)
-        val paymentString = paymentIntent.toJson();
-        return ResponseEntity<String>(paymentString, HttpStatus.OK);
+        val paymentString = paymentIntent.toJson()
+        return ResponseEntity<String>(paymentString, HttpStatus.OK)
     }
 
 }
