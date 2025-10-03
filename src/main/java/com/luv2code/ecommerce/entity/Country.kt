@@ -1,30 +1,28 @@
-package com.luv2code.ecommerce.entity;
+package com.luv2code.ecommerce.entity
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnore
+import jakarta.persistence.*
+import lombok.Getter
+import lombok.Setter
 
 @Getter
 @Setter
 @Entity
 @Table(name = "country")
-public class Country {
-
+class Country
+{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Long id;
+    private var id: Long? = null
 
     @Column(name = "code")
-    private String code;
+    private var code: String? = null
 
     @Column(name = "name")
-    private String name;
+    private var name: String? = null
 
     @JsonIgnore
     @OneToMany(mappedBy = "country")
-    List<State> states;
+    var states: MutableList<State?>? = null
 }

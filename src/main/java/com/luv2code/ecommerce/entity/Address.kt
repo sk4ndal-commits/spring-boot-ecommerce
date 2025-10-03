@@ -1,35 +1,36 @@
-package com.luv2code.ecommerce.entity;
+package com.luv2code.ecommerce.entity
 
-import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import jakarta.persistence.*
+import lombok.Getter
+import lombok.Setter
 
 @Entity
 @Table(name = "address")
 @Getter
 @Setter
-public class Address {
+class Address
+{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Long id;
+    private var id: Long? = null
 
     @Column(name = "street")
-    private String street;
+    private var street: String? = null
 
     @Column(name = "city")
-    private String city;
+    private var city: String? = null
 
     @Column(name = "state")
-    private String state;
+    private var state: String? = null
 
     @Column(name = "country")
-    private String country;
+    private var country: String? = null
 
     @Column(name = "zip_code")
-    private String zipCode;
+    private var zipCode: String? = null
 
     @OneToOne
     @PrimaryKeyJoinColumn
-    private Order order;
+    private val order: Order? = null
 }

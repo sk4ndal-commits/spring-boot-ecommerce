@@ -1,61 +1,52 @@
-package com.luv2code.ecommerce.entity;
+package com.luv2code.ecommerce.entity
 
-import java.math.BigDecimal;
-import java.util.Date;
-
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-import lombok.Data;
+import jakarta.persistence.*
+import lombok.Data
+import org.hibernate.annotations.CreationTimestamp
+import org.hibernate.annotations.UpdateTimestamp
+import java.math.BigDecimal
+import java.util.*
 
 @Entity
 @Table(name = "product")
 @Data
-public class Product {
-  
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "id")
-  private Long id;
+class Product
+{
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private var id: Long? = null
 
-  @ManyToOne
-  @JoinColumn(name = "category_id", nullable = false)
-  private ProductCategory category;
+    @ManyToOne
+    @JoinColumn(name = "category_id", nullable = false)
+    private val category: ProductCategory? = null
 
-  @Column(name = "sku")
-  private String sku;
+    @Column(name = "sku")
+    private var sku: String? = null
 
-  @Column(name = "name")
-  private String name;
-  
-  @Column(name = "description")
-  private String description;
+    @Column(name = "name")
+    private var name: String? = null
 
-  @Column(name = "unit_price")
-  private BigDecimal unitPrice;
+    @Column(name = "description")
+    private var description: String? = null
 
-  @Column(name = "image_url")
-  private String imageUrl;
+    @Column(name = "unit_price")
+    private var unitPrice: BigDecimal? = null
 
-  @Column(name = "active")
-  private Boolean active;
+    @Column(name = "image_url")
+    private var imageUrl: String? = null
 
-  @Column(name = "units_in_stock")
-  private Integer unitsInStock;
+    @Column(name = "active")
+    private var active: Boolean? = null
 
-  @Column(name = "date_created")
-  @CreationTimestamp
-  private Date dateCreated;
+    @Column(name = "units_in_stock")
+    private var unitsInStock: Int? = null
 
-  @Column(name = "last_updated")
-  @UpdateTimestamp
-  private Date lastUpdated;
+    @Column(name = "date_created")
+    @CreationTimestamp
+    private var dateCreated: Date? = null
+
+    @Column(name = "last_updated")
+    @UpdateTimestamp
+    private var lastUpdated: Date? = null
 }

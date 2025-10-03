@@ -1,6 +1,6 @@
 package com.luv2code.ecommerce.service;
 
-import com.luv2code.ecommerce.dao.CustomerRepository;
+import com.luv2code.ecommerce.dao.ICustomerRepository;
 import com.luv2code.ecommerce.dto.PaymentInfo;
 import com.luv2code.ecommerce.dto.Purchase;
 import com.luv2code.ecommerce.dto.PurchaseResponse;
@@ -19,9 +19,9 @@ import java.util.*;
 @Service
 public class CheckoutService implements ICheckoutService {
 
-    private final CustomerRepository customerRepository;
+    private final ICustomerRepository customerRepository;
 
-    public CheckoutService(CustomerRepository customerRepository, @Value("${stripe.key.secret}") String secretKey) {
+    public CheckoutService(ICustomerRepository customerRepository, @Value("${stripe.key.secret}") String secretKey) {
         this.customerRepository = customerRepository;
         Stripe.apiKey = secretKey;
     }

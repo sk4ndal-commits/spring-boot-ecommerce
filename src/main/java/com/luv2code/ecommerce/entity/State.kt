@@ -1,24 +1,25 @@
-package com.luv2code.ecommerce.entity;
+package com.luv2code.ecommerce.entity
 
-import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import jakarta.persistence.*
+import lombok.Getter
+import lombok.Setter
 
 @Getter
 @Setter
 @Entity
 @Table(name = "state")
-public class State {
+class State
+{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "id")
-    public Long id;
+    var id: Long? = null
 
 
     @Column(name = "name")
-    public String name;
+    var name: String? = null
 
     @ManyToOne
     @JoinColumn(name = "country_id")
-    private Country country;
+    private val country: Country? = null
 }

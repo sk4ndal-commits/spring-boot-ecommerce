@@ -1,8 +1,6 @@
-package com.luv2code.ecommerce.dto;
+package com.luv2code.ecommerce.dto
 
-import lombok.Data;
+import lombok.Data
 
 @Data
-public class PurchaseResponse {
-    private final String orderTrackingNumber;
-}
+data class PurchaseResponse(val orderTrackingNumber: String? = null)

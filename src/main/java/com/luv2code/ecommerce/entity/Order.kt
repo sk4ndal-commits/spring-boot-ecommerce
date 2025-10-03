@@ -1,69 +1,63 @@
-package com.luv2code.ecommerce.entity;
+package com.luv2code.ecommerce.entity
 
-import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-
-import java.math.BigDecimal;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import jakarta.persistence.*
+import lombok.Getter
+import lombok.Setter
+import org.hibernate.annotations.CreationTimestamp
+import org.hibernate.annotations.UpdateTimestamp
+import java.math.BigDecimal
+import java.util.*
 
 @Entity
 @Table(name = "orders")
 @Getter
 @Setter
-public class Order {
+class Order {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Long id;
+    private var id: Long? = null
 
     @Column(name = "order_tracking_number")
-    private String orderTrackingNumber;
+    var orderTrackingNumber: String? = null
 
     @Column(name = "total_price")
-    private BigDecimal totalPrice;
+    private var totalPrice: BigDecimal? = null
 
     @Column(name = "total_quantity")
-    private Integer totalQuantity;
+    private var totalQuantity: Integer? = null
 
     @Column(name = "status")
-    private String status;
+    private var status: String? = null
 
     @Column(name = "date_created")
     @CreationTimestamp
-    private Date dateCreated;
+    private var dateCreated: Date? = null
 
     @Column(name = "last_updated")
     @UpdateTimestamp
-    private Date lastUpdated;
+    private var lastUpdated: Date? = null
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "order")
-    private Set<OrderItem> orderItems = new HashSet<>();
+    @OneToMany(cascade = [CascadeType.ALL], mappedBy = "order")
+    var orderItems: MutableSet<OrderItem> = HashSet()
 
     @ManyToOne
     @JoinColumn(name = "customer_id")
-    private Customer customer;
+    var customer: Customer? = null
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = [CascadeType.ALL])
     @JoinColumn(name = "shipping_address_id", referencedColumnName = "id")
-    private Address shippingAddress;
+    var shippingAddress: Address? = null
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = [CascadeType.ALL])
     @JoinColumn(name = "billing_address_id", referencedColumnName = "id")
-    private Address billingAddress;
+    var billingAddress: Address? = null
 
-    public void add(OrderItem item) {
-        if (item != null) {
-            if (this.orderItems == null) {
-                this.orderItems = new HashSet<>();
-            }
-            this.orderItems.add(item);
-            item.setOrder(this);
-        }
+    fun add(item: OrderItem?){
+        if (item == null) return
+
+        this.orderItems.add(item)
+        item.order = this
     }
 }

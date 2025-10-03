@@ -1,11 +1,11 @@
-package com.luv2code.ecommerce.dto;
+package com.luv2code.ecommerce.dto
 
-import lombok.Data;
+import lombok.Data
 
 @Data
-public class PaymentInfo {
-
-    private String receiptEmail;
-    private int amount;
-    private String currency;
+class PaymentInfo
+{
+    var receiptEmail: String? = null
+    var amount: Integer? = null
+    var currency: String? = null
 }

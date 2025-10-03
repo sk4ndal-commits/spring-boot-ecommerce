@@ -6,7 +6,10 @@ import com.luv2code.ecommerce.dto.PurchaseResponse;
 import com.stripe.exception.StripeException;
 import com.stripe.model.PaymentIntent;
 
-public interface ICheckoutService {
-    PurchaseResponse placeOrder(Purchase purchase);
-    PaymentIntent createPaymentIntent(PaymentInfo paymentInfo) throws StripeException;
+interface ICheckoutService
+{
+    fun placeOrder(purchase: Purchase?): PurchaseResponse?
+
+    @Throws(StripeException::class)
+    fun createPaymentIntent(paymentInfo: PaymentInfo?): PaymentIntent?
 }

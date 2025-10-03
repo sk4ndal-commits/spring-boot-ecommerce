@@ -4,6 +4,7 @@ import com.luv2code.ecommerce.entity.Customer;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface CustomerRepository extends JpaRepository<Customer, Long> {
-  Customer findByEmail(String email);
+interface ICustomerRepository : JpaRepository<Customer?, Long?>
+{
+    fun findByEmail(email: String?): Customer?
 }

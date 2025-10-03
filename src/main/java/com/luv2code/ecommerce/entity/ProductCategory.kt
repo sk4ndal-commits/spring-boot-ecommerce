@@ -1,34 +1,24 @@
-package com.luv2code.ecommerce.entity;
+package com.luv2code.ecommerce.entity
 
-import java.util.Set;
-
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*
+import lombok.Getter
+import lombok.Setter
 
 // choose Getter/Setter, Data has in OneToMany relationships a bug
-import lombok.Getter;
-import lombok.Setter;
-
 @Entity
 @Table(name = "product_category")
 @Getter
 @Setter
-public class ProductCategory {
-  
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "id")
-  private Long id;
+class ProductCategory
+{
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private var id: Long? = null
 
-  @Column(name = "category_name")
-  private String categoryName;
+    @Column(name = "category_name")
+    private var categoryName: String? = null
 
-  @OneToMany(cascade = CascadeType.ALL, mappedBy = "category")
-  private Set<Product> products;
+    @OneToMany(cascade = [CascadeType.ALL], mappedBy = "category")
+    private val products: MutableSet<Product?>? = null
 }

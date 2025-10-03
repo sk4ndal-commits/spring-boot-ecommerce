@@ -1,40 +1,35 @@
-package com.luv2code.ecommerce.entity;
+package com.luv2code.ecommerce.entity
 
-import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import jakarta.persistence.*
+import lombok.Getter
+import lombok.Setter
 
-import java.math.BigDecimal;
+import java.math.BigDecimal
 
 @Entity
 @Table(name = "order_item")
 @Getter
 @Setter
-public class OrderItem {
+class OrderItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Long id;
+    private var id: Long? = null
 
     @Column(name = "image_url")
-    private String imageUrl;
+    private var imageUrl: String? = null
 
     @Column(name = "quantity")
-    private Integer quantity;
+    private var quantity: Integer? = null
 
     @Column(name = "unit_price")
-    private BigDecimal unitPrice;
+    private var unitPrice: BigDecimal? = null
 
     @Column(name = "product_id")
-    private Long productId;
+    private var productId: Long? = null
 
     @ManyToOne
     @JoinColumn(name = "order_id")
-    private Order order;
-
-
-    public void setOrder(Order order) {
-        this.order = order;
-    }
+    var order: Order? = null
 }
