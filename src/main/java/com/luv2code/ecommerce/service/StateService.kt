@@ -7,5 +7,5 @@ import org.springframework.stereotype.Service
 @Service
 open class StateService(private val stateRepository: StateRepository) {
     fun findAll(): List<State> = stateRepository.findAll().filterNotNull()
-    fun findByCountryCode(code: String): List<State> = stateRepository.findByCountryCode(code)?.filterNotNull() ?: emptyList()
+    fun findByCountryCode(code: String): List<State> = stateRepository.findByCountryCode(code).toList()
 }
