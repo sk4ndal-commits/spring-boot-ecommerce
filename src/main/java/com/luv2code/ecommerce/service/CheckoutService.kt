@@ -1,6 +1,6 @@
 package com.luv2code.ecommerce.service
 
-import com.luv2code.ecommerce.dao.ICustomerRepository
+import com.luv2code.ecommerce.dao.CustomerRepository
 import com.luv2code.ecommerce.dto.PaymentInfo
 import com.luv2code.ecommerce.dto.Purchase
 import com.luv2code.ecommerce.dto.PurchaseResponse
@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional
 
 @Service
 open class CheckoutService(
-    private val customerRepository: ICustomerRepository,
+    private val customerRepository: CustomerRepository,
     @param:Value($$"${stripe.key.secret}") private val secretKey: String,
 ) : ICheckoutService
 {
