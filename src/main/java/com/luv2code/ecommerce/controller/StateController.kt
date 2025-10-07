@@ -14,7 +14,7 @@ class StateController(private val stateService: StateService) {
     fun getAllStates(): List<State> = stateService.findAll()
 
     @GetMapping("/search/findByCountryCode")
-    fun findByCountryCode(@RequestParam("code") code: String): List<State>? =
+    fun findByCountryCode(@RequestParam("code") code: String): List<State> =
         stateService.findByCountryCode(code)
 }
 
