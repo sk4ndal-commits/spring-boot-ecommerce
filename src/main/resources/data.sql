@@ -1,6 +1,8 @@
 -- Tabellen löschen, falls vorhanden
 DROP TABLE IF EXISTS product;
 DROP TABLE IF EXISTS product_category;
+DROP TABLE IF EXISTS country;
+DROP TABLE IF EXISTS state;
 
 -- Tabelle product_category
 CREATE TABLE product_category (
@@ -24,6 +26,21 @@ CREATE TABLE product (
                          FOREIGN KEY (category_id) REFERENCES product_category(id)
 );
 
+-- Tabelle country
+CREATE TABLE country (
+                        id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                        code VARCHAR(10),
+                        name VARCHAR(255)
+);
+
+-- Tabelle state
+CREATE TABLE state (
+                      id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                      name VARCHAR(255),
+                      country_id BIGINT,
+                      FOREIGN KEY (country_id) REFERENCES country(id)
+);
+
 -- Beispieldaten einfügen
 INSERT INTO product_category(category_name) VALUES ('BOOKS');
 
@@ -41,3 +58,13 @@ VALUES ('BOOK-TECH-1003', 'Internet of Things (IoT) - Getting Started', 'Learn I
 
 INSERT INTO product (sku, name, description, image_url, active, units_in_stock, unit_price, category_id, date_created)
 VALUES ('BOOK-TECH-1004', 'The Go Programming Language: A to Z', 'Learn Go', 'assets/images/products/placeholder.png', 1, 100, 24.99, 1, NOW());
+
+-- Länder
+INSERT INTO country (id, code, name) VALUES (1, 'DE', 'Deutschland');
+INSERT INTO country (id, code, name) VALUES (2, 'US', 'United States');
+
+-- Staaten
+INSERT INTO state (id, name, country_id) VALUES (1, 'Bayern', 1);
+INSERT INTO state (id, name, country_id) VALUES (2, 'Berlin', 1);
+INSERT INTO state (id, name, country_id) VALUES (3, 'California', 2);
+INSERT INTO state (id, name, country_id) VALUES (4, 'Texas', 2);
