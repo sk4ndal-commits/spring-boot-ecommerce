@@ -15,10 +15,4 @@
 - Stripe
 - MySQL
 
-## Things Learned
 
-- Represent Database-Entity-Relations in Spring-Boot 
-- Communicating with Strip to create a PaymentIntent
-- Application and Code design
-- Using Okta for protecting routes
-- Using JPA to manipulate database tables
