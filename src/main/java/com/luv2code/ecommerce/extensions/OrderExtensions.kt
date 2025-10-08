@@ -2,7 +2,7 @@ package com.luv2code.ecommerce.extensions
 
 import com.luv2code.ecommerce.dto.Purchase
 import com.luv2code.ecommerce.entity.Order
-import java.util.UUID
+import java.util.*
 
 fun Order.placeFromPurchase(purchase: Purchase): String
 {
@@ -12,4 +12,13 @@ fun Order.placeFromPurchase(purchase: Purchase): String
     this.shippingAddress = purchase.shippingAddress
 
     return orderTrackingNumber
+}
+
+fun Any?.throwIfNull(message: String?)
+{
+    if (this == null)
+    {
+        val exceptionMessage = message ?: ""
+        throw IllegalArgumentException(exceptionMessage)
+    }
 }

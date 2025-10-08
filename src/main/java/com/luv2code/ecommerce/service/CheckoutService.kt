@@ -5,6 +5,7 @@ import com.luv2code.ecommerce.dto.PaymentInfo
 import com.luv2code.ecommerce.dto.Purchase
 import com.luv2code.ecommerce.dto.PurchaseResponse
 import com.luv2code.ecommerce.entity.Customer
+import com.luv2code.ecommerce.extensions.throwIfNull
 import com.luv2code.ecommerce.extensions.placeFromPurchase
 import com.stripe.Stripe
 import com.stripe.exception.StripeException
@@ -30,11 +31,13 @@ open class CheckoutService(
     override fun placeOrder(purchase: Purchase?): PurchaseResponse
     {
         requireNotNull(purchase) { "purchase must not be null" }
-        val order = purchase.order ?: throw IllegalArgumentException("order must not be null")
+        val order = purchase.order
+            ?: throw IllegalArgumentException("order must not be null")
 
         val orderTrackingNumber = order.placeFromPurchase(purchase)
 
-        val orderItems = purchase.orderItems ?: throw IllegalArgumentException("orderItems must not be null")
+        val orderItems = purchase.orderItems
+            ?: throw IllegalArgumentException("orderItems must not be null")
         orderItems.forEach(order::add)
 
         val customer = getCustomer(purchase)
@@ -47,6 +50,7 @@ open class CheckoutService(
     @Throws(StripeException::class)
     override fun createPaymentIntent(paymentInfo: PaymentInfo?): PaymentIntent
     {
+        paymentInfo.throwIfNull("$paymentInfo may not be null")
         val paymentMethodTypes = listOf("card")
 
         val params = mapOf(
@@ -62,14 +66,13 @@ open class CheckoutService(
 
     private fun getCustomer(purchase: Purchase): Customer
     {
-        var customer = purchase.customer ?: throw IllegalArgumentException("customer must not be null")
-        val email = customer.email ?: throw IllegalArgumentException("email must not be null")
+        var customer = purchase.customer
+            ?: throw IllegalArgumentException("customer must not be null")
+        val email = customer.email
+            ?: throw IllegalArgumentException("email must not be null")
         val customerFromRepository = customerRepository.findByEmail(email)
 
-        if (customerFromRepository != null)
-        {
-            customer = customerFromRepository
-        }
+        customer = customerFromRepository
 
         return customer
     }
